@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookstore - Search Books</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Bookstore</h1>
+    <nav>
+        <a href="index.html">Home</a> | 
+        <a href="search.html">Search Books</a>
+    </nav>
+    <h2>Search Books</h2>
+    <input type="text" id="search-input" placeholder="Search by title or author">
+    <div id="search-results"></div>
+
+    <script src="app.js"></script>
+    <script>
+        // Search books
+        const searchBooks = async (query) => {
+            const response = await fetch('http://localhost:3000/api/books');
+            const books = await response.json();
+            const searchResults = document.getElementById('search-results');
+            searchResults.innerHTML = '';
+
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(query.toLowerCase()) ||
+                book.author.toLowerCase().includes(query.toLowerCase())
+            );
+
+            filteredBooks.forEach(book => {
+                const bookItem = document.createElement('div');
+                bookItem.className = 'book-item';
+                bookItem.innerHTML = `<strong>${book.title}</strong> by ${book.author}`;
+                searchResults.appendChild(bookItem);
+            });
+        };
+
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const query = e.target.value;
+            searchBooks(query);
+        });
+    </script>
+</body>
+</html>
